@@ -30,6 +30,40 @@ Do you need animations beyond impress.js defaults?
         For global/reusable styles, inject via build.cjs post-processing.
 ```
 
+## Performance Pitfalls
+
+### NEVER use `backdrop-filter: blur()` on `.step`
+
+impress.js keeps **all slides in the DOM simultaneously** as 3D-positioned elements. Applying `backdrop-filter: blur()` to `.step` forces the browser to create a separate composite layer for every slide and blur each one independently — even off-screen slides. This causes severe GPU thrashing and makes transitions feel sluggish regardless of the `data-transition-duration` value.
+
+**Bad:**
+```css
+.step {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+```
+
+**Fix:** Remove `backdrop-filter` entirely. Use `background` with `rgba()` transparency for a frosted-glass look without the GPU cost.
+
+### Keep `data-transition-duration` under 600ms
+
+Values above ~700ms feel sluggish in a live presentation. A good default is `550ms`. Set it via post-processing in `build.cjs`:
+
+```js
+stripped = stripped.replace(
+  /(<div[^>]*id=["']impress["'][^>]*)(>)/,
+  '$1 data-transition-duration="550"$2'
+);
+```
+
+### Keep content entrance animation delays short
+
+Total stagger delay (first child to last) should stay under ~400ms. Delays exceeding 500ms make the slide feel broken on arrival. Recommended caps:
+- Per-child transition duration: ≤ 320ms
+- Max stagger delay (nth child): ≤ 350ms
+- List item animation duration: ≤ 300ms
+
 
 ## 1. Automatic Layout Generation
 
