@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "node build.cjs",
-    "preview": "open slides.html"
+    "preview": "open output/index.html"
   },
   "devDependencies": {
     "markpress": "^4.0.0"

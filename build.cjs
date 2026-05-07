@@ -5,7 +5,8 @@ const path = require('path');
 const markpress = require('markpress');
 
 const INPUT = path.resolve(__dirname, 'slides.md');
-const OUTPUT = path.resolve(__dirname, 'slides.html');
+const OUTPUT_DIR = path.resolve(__dirname, 'output');
+const OUTPUT = path.resolve(OUTPUT_DIR, 'index.html');
 
 const googleFonts = `
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -399,6 +400,7 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
   const finalHtml = stripped
     .replace('<head>', `<head>\n${googleFonts}`)
     .replace('</head>', `${customCss}\n</head>`);
+  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   fs.writeFileSync(OUTPUT, finalHtml, 'utf8');
   console.log(`Built: ${OUTPUT}`);
 }).catch(err => {
