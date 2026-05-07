@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const markpress = require('markpress');
 
-const INPUT = path.resolve(__dirname, 'slides.md');
+const INPUT = path.resolve(__dirname, 'slides/slides.md');
 const OUTPUT_DIR = path.resolve(__dirname, 'output');
 const OUTPUT = path.resolve(OUTPUT_DIR, 'index.html');
 
