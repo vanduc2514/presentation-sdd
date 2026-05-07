@@ -1,0 +1,18 @@
+{
+  "name": "spec-driven-development-slides",
+  "version": "1.0.0",
+  "description": "Presentation: Your AI Doesn't Know What You Want (And Neither Do You)",
+  "private": true,
+  "scripts": {
+    "build": "node build.cjs",
+    "preview": "open slides.html"
+  },
+  "devDependencies": {
+    "markpress": "^4.0.0"
+  },
+  "overrides": {
+    "first-mate": "^7.4.3",
+    "oniguruma": "^7.2.3",
+    "season": "^6.0.2"
+  }
+}
