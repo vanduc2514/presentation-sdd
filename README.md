@@ -12,7 +12,7 @@ This talk doesn't pitch a tool. It argues that **structure is the missing ingred
 
 ## Render
 
-The presentation is rendered from slides/slides.md
+The presentation is rendered from `slides/presentation.md`
 
 ```sh
 npm install
