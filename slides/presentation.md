@@ -38,8 +38,8 @@ Spec-Driven Development with OpenSpec
 
 # My Painful Story
 
-- Microservice project: changes scattered across **multiple repos + a legacy monolith**
-- AI jumped straight to generating — no full-picture exploration
+- Changes scattered across **multiple microservice repos + legacy monolith repo**
+- AI jumped straight to generating, **no throughout exploration**
 - **Long exhausting chat session** with constantly steering back and forth.
 - Wrong code. Wrong changes. **Line-by-line review of nonsense.**
 - **Performance** dropped. **Frustration** rose.
