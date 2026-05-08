@@ -78,7 +78,7 @@ Spec-Driven Development with OpenSpec
 
 # Context Windows Limitation
 
-
+![context.png](images/context.png)
 
 ------
 
@@ -166,15 +166,13 @@ Create the **specification artifact** first — everything else is derived from 
 
 # SDD with OpenSpec
 
-**The problem with most SDD tools:** too many files → developers stop reviewing → specs become theater
-
-**OpenSpec's approach:** delta specs — one scoped, reviewable artifact per change
+- OpenSpec is a meta prompt tool to instruct AI explore and define Spec artifacts with browfield first-class support
+- OpenSpec generated artifacts are well scoped, reviewable
 
 | | spec-kit | GSD | OpenSpec |
 |-|----------|-----|----------|
 | Artifact volume | High | Very high | **Low** |
 | Human review checkpoints | Medium | Low | **High** |
-| Brownfield support | Limited | Limited | **First-class** |
 | Noise level | High | Very high | **Low** |
 
 <!-- SPEAKER NOTES — Slide 8 (~2 min)
