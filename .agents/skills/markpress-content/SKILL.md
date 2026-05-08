@@ -99,6 +99,66 @@ You can drop raw HTML directly inside slides. This is useful for iframes, videos
 
 > **Important**: `--sanitize` / `sanitize: true` strips dangerous HTML. Disable sanitize if you need `<style>` tags, videos, or iframes.
 
+---
+
+## HTML-Free Authoring (Strongly Preferred)
+
+**Never write custom `<div>` wrappers or styled containers inside the markdown file.** The markdown source is for content structure only — styling and DOM transformation belong in the build script (`build.cjs`).
+
+### Pattern
+
+Write plain markdown lists and let the build script convert them to styled components:
+
+**In `slides/presentation.md` — pure markdown:**
+```markdown
+# Slide Title
+
+- First item with **emphasis**
+- Second item
+- Third item
+```
+
+**In `build.cjs` — post-processing transform:**
+```js
+// Wrap the <ul> inside a specific step into a styled card grid
+stripped = wrapStepList(stripped, 'step-2', 'card-grid', 'card-item');
+```
+
+The helper reads the rendered `<ul><li>` output and replaces it with `<div class="card-grid"><div class="card-item">…</div></div>` — keeping all markdown formatting (`**bold**`, inline code, etc.) intact.
+
+### Two-Column Layouts
+
+For two-column layouts, write a blockquote (left column) followed by a list (right column). The build script splits them:
+
+**In markdown:**
+```markdown
+> Left column content here.
+> Can span multiple lines.
+
+- Right item one
+- Right item two
+- Right item three
+```
+
+**In `build.cjs`:**
+```js
+stripped = wrapStepTwoCol(stripped, 'step-8');
+```
+
+### When Raw HTML Is Acceptable
+
+Only use raw HTML for elements that have no markdown equivalent:
+
+| Acceptable | Reason |
+|---|---|
+| `<video src="…">` | No markdown video syntax |
+| `<iframe src="…">` | No markdown iframe syntax |
+| `<image src="…">` | Image with custom styling |
+| `<!--slide-attr …-->` | Required markpress positioning comments |
+| `<!--markpress-opt … markpress-opt-->` | Required markpress config block |
+
+Everything else — cards, grids, columns, callouts, timelines — belongs in the build script.
+
 ## Images
 
 Standard markdown image syntax works. By default markpress **embeds** images as base64 inside the HTML (self-contained output). To skip embedding and keep external references, use `--no-embed` / `noEmbed: true`.
