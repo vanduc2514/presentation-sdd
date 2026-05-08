@@ -479,6 +479,7 @@ const customCss = `
       padding: 0.5rem;
       border: 1px solid var(--line);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
     }
 
     /* ── Image-only slide: title + full-width image ──── */
@@ -518,6 +519,76 @@ const customCss = `
       padding: 0.5rem;
       border: 1px solid var(--line);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+    }
+
+    /* ── Image modal ──────────────────────────────── */
+    #img-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.82);
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
+
+    #img-modal.open {
+      display: flex;
+    }
+
+    #img-modal img {
+      max-width: 92vw;
+      max-height: 88vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 14px;
+      background: #ffffff;
+      padding: 0.6rem;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+      display: block;
+    }
+
+    #img-modal-close {
+      position: fixed;
+      top: 1.1rem;
+      right: 1.3rem;
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      font-size: 1.3rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #img-modal-close:hover {
+      background: rgba(255, 255, 255, 0.32);
+    }
+
+    @media (max-width: 600px) {
+      #img-modal img {
+        max-width: 98vw;
+        max-height: 82vh;
+        padding: 0.3rem;
+        border-radius: 10px;
+      }
+
+      #img-modal-close {
+        top: 0.7rem;
+        right: 0.7rem;
+        width: 2.1rem;
+        height: 2.1rem;
+        font-size: 1.1rem;
+      }
     }
 
     @media (max-width: 900px) {
@@ -666,9 +737,63 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
   stripped = wrapStepList(stripped, 'step-11', 'question-list', 'question-item');
   stripped = wrapStepList(stripped, 'step-12', 'takeaway-list', 'takeaway-item');
   stripped = wrapImageSlidesGlobally(stripped);
+
+  const imageModal = `
+<div id="img-modal" role="dialog" aria-modal="true" aria-label="Image preview">
+  <button id="img-modal-close" aria-label="Close">&times;</button>
+  <img id="img-modal-img" src="" alt="">
+</div>
+<script>
+(function () {
+  var modal = document.getElementById('img-modal');
+  var modalImg = document.getElementById('img-modal-img');
+  var closeBtn = document.getElementById('img-modal-close');
+
+  function openModal(src, alt) {
+    modalImg.src = src;
+    modalImg.alt = alt || '';
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    modalImg.src = '';
+    document.body.style.overflow = '';
+  }
+
+  function attachImageHandlers() {
+    var imgs = document.querySelectorAll('.step img');
+    imgs.forEach(function (img) {
+      img.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openModal(img.src, img.alt);
+      });
+    });
+  }
+
+  closeBtn.addEventListener('click', closeModal);
+
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attachImageHandlers);
+  } else {
+    attachImageHandlers();
+  }
+})();
+</script>`;
+
   const finalHtml = stripped
     .replace('<head>', `<head>\n${googleFonts}`)
-    .replace('</head>', `${customCss}\n</head>`);
+    .replace('</head>', `${customCss}\n</head>`)
+    .replace('</body>', `${imageModal}\n</body>`);
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   fs.writeFileSync(OUTPUT, finalHtml, 'utf8');
   console.log(`Built: ${OUTPUT}`);
