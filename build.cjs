@@ -47,6 +47,9 @@ const customCss = `
       background: #faf9f7;
       opacity: 0;
       transition: opacity 200ms ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     /* Active slide: add shadow. Only 1 slide active at a time — cost is minimal. */
@@ -202,9 +205,6 @@ const customCss = `
     /* ── Per-slide overrides ──────────────────────── */
     #step-1,
     #step-10 {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
       background: #f8f7ff;
       border-color: #d4d0f5;
     }
@@ -251,6 +251,142 @@ const customCss = `
     #step-7 table,
     #step-9 table {
       font-size: clamp(0.88rem, 1.7vmin, 1.22rem);
+    }
+
+    /* ── Engagement slides: larger list items ─────── */
+    #step-4 li {
+      font-size: clamp(1.1rem, 2.1vmin, 1.65rem);
+      margin: 0.85rem 0;
+    }
+
+    /* ── Story timeline (slide 4) ──────────────────── */
+    .story-list {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+      margin-top: 1.6rem;
+      gap: 0;
+    }
+
+    .story-item {
+      padding: 1rem 1.5rem;
+      border-left: 3px solid var(--line);
+      font-size: clamp(1.1rem, 2.1vmin, 1.6rem);
+      line-height: 1.5;
+      color: var(--ink);
+      margin: 0.4rem 0;
+    }
+
+    /* ── Question cards (slide 2) ──────────────────── */
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      margin-top: 1.8rem;
+    }
+
+    .question-item {
+      padding: 1.4rem 2rem;
+      background: #f9f8ff;
+      border: 1px solid #e0def5;
+      border-radius: 18px;
+      font-size: clamp(1.2rem, 2.3vmin, 1.75rem);
+      line-height: 1.45;
+      color: var(--ink);
+    }
+
+    /* ── Takeaway cards (slide 10) ─────────────────── */
+    .takeaway-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 0.8rem;
+    }
+
+    .takeaway-item {
+      padding: 1.2rem 1.8rem;
+      background: #f9f8ff;
+      border: 1px solid #e0def5;
+      border-radius: 18px;
+      font-size: clamp(1.2rem, 2.2vmin, 1.7rem);
+      line-height: 1.45;
+      color: var(--ink);
+    }
+
+    /* Step 10 has lavender bg — use white cards for contrast */
+    #step-10 .takeaway-item {
+      background: #ffffff;
+      border-color: #c8c5f0;
+    }
+
+    /* ── Two-column layout (slide 8) ──────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.4rem;
+      align-items: start;
+      margin-top: 0.8rem;
+    }
+
+    .col-left > *:first-child {
+      margin-top: 0;
+    }
+
+    .col-right ul {
+      padding-left: 0;
+      list-style: none;
+      margin-top: 0;
+    }
+
+    .col-right li {
+      padding: 0.85rem 1.1rem 0.85rem 1.25rem;
+      margin: 0.5rem 0;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: clamp(0.95rem, 1.85vmin, 1.4rem);
+    }
+
+    .col-right li::marker { content: none; }
+
+    .col-right li:nth-child(1) { background: #ecfdf5; color: #059669; border-left: 3px solid #059669; }
+    .col-right li:nth-child(2) { background: #f0fdf4; color: #65a30d; border-left: 3px solid #65a30d; }
+    .col-right li:nth-child(3) { background: #fffbeb; color: #d97706; border-left: 3px solid #d97706; }
+    .col-right li:nth-child(4) { background: #fff7ed; color: #ea580c; border-left: 3px solid #ea580c; }
+    .col-right li:nth-child(5) { background: #fef2f2; color: #dc2626; border-left: 3px solid #dc2626; font-weight: 700; }
+
+    /* ── Problem grid (2×2) for slide 3 ──────────── */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.1rem;
+      margin-top: 1.4rem;
+      counter-reset: problem-num;
+    }
+
+    .problem-item {
+      padding: 2.2rem 1.5rem 1.4rem;
+      background: #f5f4ff;
+      border: 1px solid #e0def8;
+      border-radius: 18px;
+      font-size: clamp(1rem, 1.85vmin, 1.4rem);
+      line-height: 1.55;
+      color: var(--ink);
+      counter-increment: problem-num;
+      position: relative;
+    }
+
+    .problem-item::before {
+      content: "0" counter(problem-num);
+      position: absolute;
+      top: 1rem;
+      left: 1.4rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      font-family: "SF Mono", "Fira Code", monospace;
+      opacity: 0.6;
     }
 
     @media (max-width: 900px) {
