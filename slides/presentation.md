@@ -11,7 +11,7 @@ markpress-opt-->
 # Your AI Doesn't Know What You Want
 ## (And Neither Do You)
 
-Spec-Driven Development for Real Projects
+Spec-Driven Development with OpenSpec
 
 <!-- SPEAKER NOTES — Slide 1 (~1 min)
 - Put the title up. Say nothing. Let it land.
@@ -34,11 +34,31 @@ Spec-Driven Development for Real Projects
 
 ------
 
+<!--slide-attr x=2400 y=1600 rotate=-5 scale=1.0 -->
+
+# My Painful Story
+
+- Microservice project: changes scattered across **multiple repos + a legacy monolith**
+- AI jumped straight to generating — no full-picture exploration
+- **Long exhausting chat session** with constantly steering back and forth.
+- Wrong code. Wrong changes. **Line-by-line review of nonsense.**
+- **Performance** dropped. **Frustration** rose.
+- I started **dreading** the tool I was supposed to love.
+
+<!-- SPEAKER NOTES — Slide 4 (~2 min)
+- This was a real professional project. The codebase was spread across services and a legacy system that the AI had only partial visibility into.
+- It didn't know enough — it just started generating confidently.
+- I only found the problems at review time, which was already too late. The AI had just enough context to be dangerous, but not enough to be correct.
+- The review burden flipped from lightweight check to full audit. That's not sustainable.
+-->
+
+------
+
 <!--slide-attr x=3200 y=400 rotate=3 scale=1.0 -->
 
 # Where Does It All Go Wrong?
 
-- We are already **vibe coding in production** — we just don't call it that
+- We are already **vibe coding for serious work** — we just don't call it that
 - Our prompts are business-language: they say **what** the user want, not **how** it should be built
 - AI explores the codebase — but **guesses** the technical detail we left out
 - Vague intent → hallucinations → wrong class, wrong file, wrong assumption
@@ -53,22 +73,12 @@ Spec-Driven Development for Real Projects
 
 ------
 
-<!--slide-attr x=2400 y=1600 rotate=-5 scale=1.0 -->
+<!--slide-attr x=3200 y=400 rotate=3 scale=1.0 -->
 
-# My Painful Story
 
-- Microservice project: changes scattered across **multiple repos + a legacy monolith**
-- AI jumped straight to generating — no full-picture exploration
-- Wrong code. Wrong changes. **Line-by-line review of nonsense.**
-- Performance dropped. Frustration rose.
-- I started dreading the tool I was supposed to love.
+# Context Windows Limitation
 
-<!-- SPEAKER NOTES — Slide 4 (~2 min)
-- This was a real professional project. The codebase was spread across services and a legacy system that the AI had only partial visibility into.
-- It didn't know enough — it just started generating confidently.
-- I only found the problems at review time, which was already too late. The AI had just enough context to be dangerous, but not enough to be correct.
-- The review burden flipped from lightweight check to full audit. That's not sustainable.
--->
+
 
 ------
 
@@ -76,13 +86,11 @@ Spec-Driven Development for Real Projects
 
 # What Is Spec-Driven Development (SDD)?
 
-**Write** the specification first — everything else is derived from it
+Create the **specification artifact** first — everything else is derived from it
 
 **The spec is the shared understanding between you and the AI**
 
-`Plan → Spec → Tasks → Implement → Validation → Archive`
-
-> Not a new idea: BDD, TDD, contract-first APIs are all in this family
+> BDD, TDD, OpenAPI contract-first, ... share the same concept
 
 <!-- SPEAKER NOTES — Slide 5a (~3 min)
 - SDD isn't revolutionary — it's disciplined. The ideas behind it have existed in BDD, TDD, and API-first design for years.
@@ -98,12 +106,12 @@ Spec-Driven Development for Real Projects
 
 | Stage | What Happens |
 |-------|-------------|
-| **Plan** | Understand the problem and scope |
-| **Spec** | Define requirements and acceptance criteria |
-| **Tasks** | Break the spec into discrete implementation steps |
-| **Implement** | AI works inside defined constraints |
-| **Validation** | Verify against the spec |
-| **Archive** | Living documentation that stays in sync |
+| **Spec** | Define **.md** artifacts such as *prd.md*, *research.md*, *design.md*, *tasks.md*, ... |
+| **Implement** | AI read Spec artifacts and implement within the Spec context |
+| **Validation** | Verify implementation against the spec |
+| **Archive** | Archive after implementation done |
+
+![sdd.png](images/sdd.png)
 
 <!-- SPEAKER NOTES — Slide 5b
 - Walk through each stage: Plan scopes the problem. Spec details requirements. Tasks break it into execution steps. Then the AI implements. Validation checks against the spec. Archive keeps context alive.
@@ -118,15 +126,15 @@ Spec-Driven Development for Real Projects
 
 | Vibe Coding | Spec-Driven |
 |-------------|-------------|
-| Prompt → hope | Spec → directed output |
+| Prompt → hope | Spec → high quality generated code |
 | AI guesses scope | AI works inside defined scope |
 | Session decays | Resume anywhere from the spec |
-| Review code (too late) | Review intent (before code exists) |
-| One long chaotic session | Small, scoped, archivable changes |
+| Review code | Review intent |
+| One long chaotic session | Small, scoped, well-defined changes |
 
 <!-- SPEAKER NOTES — Slide 6 (~2 min)
 - The biggest shift is *when* you review. In vibe coding, you review code after it's written — when it's already expensive to change.
-- With SDD, you review intent before the AI writes a single line. Cheap to fix at that stage.
+- With SDD, you review intent before the AI writes a single line. Cheap to steer at that stage.
 - The session decay problem is solved by the spec itself — you can close a session, open a new one, hand it the spec, and continue exactly where you left off.
 -->
 
@@ -139,13 +147,9 @@ Spec-Driven Development for Real Projects
 > A compiler catches errors before your code runs.  
 > SDD catches misunderstandings before your AI codes.
 
-**You don't review the output — you review the intent.**
-
-- Spec stage → cheapest to fix
-- Design stage → cheap to fix
-- Code stage → expensive to fix
-- PR stage → very expensive
-- Production → catastrophic
+- Spec stage → cheap to steer
+- Implementation stage → expensive to steer
+- Production → **impossible to steer**
 
 <!-- SPEAKER NOTES — Slide 7 (~2 min)
 - Every developer knows you don't skip compilation. It catches errors early, when they're cheap.
@@ -184,9 +188,9 @@ Spec-Driven Development for Real Projects
 
 # Closing
 
-Your AI know what you want if it has enough context
+**Your AI knows what you want (and also you) if there is enough context**
 
-- The answer isn't a better prompt. It's a clearer spec.
+- The answer isn't a better prompt. It's a clearer understanding and better spec artifacts.
 - SDD is ahead-of-time compilation for your intent.
 - Apply SDD for implementing a feature then evaluate.
 

@@ -290,6 +290,26 @@ const customCss = `
       color: var(--ink);
     }
 
+    #step-11 .question-list {
+      margin-top: 1.4rem;
+      gap: 0.9rem;
+    }
+
+    #step-11 .question-item {
+      font-size: clamp(1.05rem, 2.0vmin, 1.45rem);
+      padding: 1rem 1.35rem;
+    }
+
+    #step-9 .question-list {
+      margin-top: 1.2rem;
+      gap: 0.85rem;
+    }
+
+    #step-9 .question-item {
+      font-size: clamp(1.05rem, 2.0vmin, 1.45rem);
+      padding: 0.95rem 1.3rem;
+    }
+
     /* ── Takeaway cards (slide 10) ─────────────────── */
     .takeaway-list {
       display: flex;
@@ -383,6 +403,45 @@ const customCss = `
       opacity: 0.6;
     }
 
+    /* ── SDD Workflow slide: content + image side by side ──── */
+    #step-7 {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      grid-template-rows: auto 1fr;
+      column-gap: 2rem;
+      align-items: stretch;
+      height: min(680px, 75vh);
+    }
+
+    #step-7 > h1 {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+
+    #step-7 > table {
+      grid-column: 1;
+      grid-row: 2;
+      align-self: start;
+    }
+
+    #step-7 > p:has(img) {
+      grid-column: 2;
+      grid-row: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+
+    #step-7 img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center center;
+      display: block;
+      border-radius: 12px;
+    }
+
     @media (max-width: 900px) {
       .step {
         width: 88vw;
@@ -393,6 +452,22 @@ const customCss = `
 
       .step h1 { max-width: none; }
       .step table { font-size: 0.88em; }
+
+      /* On mobile: stack vertically, image below content */
+      #step-7 {
+        display: flex;
+        flex-direction: column;
+      }
+
+      #step-7 > p:has(img) {
+        order: 10;
+        margin-top: 1.2rem;
+      }
+
+      #step-7 img {
+        max-height: 38vh;
+        width: 100%;
+      }
     }
   </style>`;
 
@@ -465,8 +540,10 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
   stripped = wrapStepList(stripped, 'step-2', 'question-list', 'question-item');
   stripped = wrapStepList(stripped, 'step-3', 'problem-grid', 'problem-item');
   stripped = wrapStepList(stripped, 'step-4', 'story-list', 'story-item');
+  stripped = wrapStepList(stripped, 'step-9', 'question-list', 'question-item');
   stripped = wrapStepTwoCol(stripped, 'step-8');
   stripped = wrapStepList(stripped, 'step-10', 'takeaway-list', 'takeaway-item');
+  stripped = wrapStepList(stripped, 'step-11', 'question-list', 'question-item');
   const finalHtml = stripped
     .replace('<head>', `<head>\n${googleFonts}`)
     .replace('</head>', `${customCss}\n</head>`);
