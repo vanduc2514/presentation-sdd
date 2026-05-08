@@ -481,6 +481,45 @@ const customCss = `
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
 
+    /* ── Image-only slide: title + full-width image ──── */
+    .step:has(.image-only-col) {
+      justify-content: flex-start;
+      padding-top: 2.8rem;
+    }
+
+    .image-only-col {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 0.8rem;
+    }
+
+    .image-only-col > h1 {
+      margin: 0 0 0.2rem 0;
+    }
+
+    .image-only-img {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    .image-only-img img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      border-radius: 12px;
+      background: #ffffff;
+      padding: 0.5rem;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
     @media (max-width: 900px) {
       .step {
         width: 88vw;
@@ -506,6 +545,10 @@ const customCss = `
       .global-image-col img {
         max-height: 38vh;
         width: 100%;
+      }
+
+      .image-only-img img {
+        max-height: 45vh;
       }
     }
   </style>`;
@@ -561,9 +604,12 @@ function wrapStepTwoCol(html, stepId) {
 }
 
 /**
- * Globally finds any slide with an image and wraps the content into a two-column layout.
- * The h1 goes inside the grid as a full-width header; left col has the remaining content,
- * right col has the image.
+ * Globally finds any slide with an image and wraps the content.
+ *
+ * - If the slide has ONLY a title + image (no other content), the image fills
+ *   all available space (full-width, single-column).
+ * - Otherwise, uses a two-column layout: h1 spans full width, left col gets
+ *   the remaining content, right col gets the image.
  */
 function wrapImageSlidesGlobally(html) {
   const parts = html.split(/(?=<div id="step-\d+")/);
@@ -583,10 +629,15 @@ function wrapImageSlidesGlobally(html) {
     const beforeH1 = part.slice(0, part.indexOf(h1Match[0]));
     const h1 = h1Match[0];
     const leftContent = part.slice(h1End, imgStart).trim();
-    const rightContent = imgMatch[0];
     const afterImg = part.slice(imgStart + imgMatch[0].length);
 
-    return `${beforeH1}<div class="global-image-col">\n${h1}\n<div class="col-left">\n${leftContent}\n</div>\n<div class="col-right">\n${rightContent}\n</div>\n</div>\n${afterImg}`;
+    // Image-only slide: no left-column content — render full-width image
+    if (!leftContent) {
+      return `${beforeH1}<div class="image-only-col">\n${h1}\n<div class="image-only-img">\n${imgMatch[0]}\n</div>\n</div>\n${afterImg}`;
+    }
+
+    // Two-column layout
+    return `${beforeH1}<div class="global-image-col">\n${h1}\n<div class="col-left">\n${leftContent}\n</div>\n<div class="col-right">\n${imgMatch[0]}\n</div>\n</div>\n${afterImg}`;
   }).join('');
 }
 
