@@ -162,12 +162,31 @@ Create the **specification artifact** first — everything else is derived from 
 
 ------
 
+<!--slide-attr x=-2000 y=-400 rotate=1 scale=1.0 -->
+
+# Review the Spec
+
+> Always review the spec to ensure a shared understanding between you and your AI
+
+- **Catch Gaps early**: Did we miss an edge case?
+- **Verify Design**: Is this the right pattern?
+- **Check Scope**: Too much or too little?
+- **Check Hallucination**: Where does this come from?
+
+<!-- SPEAKER NOTES — Slide 7.5 (~2 min)
+- This is the "Review Gate". It's the most critical part of the process.
+- You are reviewing the *plan* for code, not the code itself.
+- Don't let the AI proceed until you'd be willing to bet on the spec's correctness.
+-->
+
+------
+
 <!--slide-attr x=-1400 y=-850 rotate=2 scale=1.0 -->
 
 # SDD with OpenSpec
 
-- OpenSpec is a meta prompt tool to instruct AI explore and define Spec artifacts with browfield first-class support
-- OpenSpec generated artifacts are well scoped, reviewable
+- OpenSpec is a meta prompt tool to instruct AI explore project context and generate Scoped Spec artifacts
+- OpenSpec artifacts are well scoped, reviewable, and has browfield project as first-class support
 
 | | spec-kit | GSD | OpenSpec |
 |-|----------|-----|----------|
