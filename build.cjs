@@ -664,6 +664,7 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
   stripped = wrapStepTwoCol(stripped, 'step-8');
   stripped = wrapStepList(stripped, 'step-10', 'takeaway-list', 'takeaway-item');
   stripped = wrapStepList(stripped, 'step-11', 'question-list', 'question-item');
+  stripped = wrapStepList(stripped, 'step-12', 'takeaway-list', 'takeaway-item');
   stripped = wrapImageSlidesGlobally(stripped);
   const finalHtml = stripped
     .replace('<head>', `<head>\n${googleFonts}`)
