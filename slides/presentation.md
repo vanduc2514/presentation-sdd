@@ -144,12 +144,14 @@ Create the **specification artifact** first — everything else is derived from 
 
 # The Intent Compiler
 
-> A compiler catches errors before your code runs.  
-> SDD catches misunderstandings before your AI codes.
+> A compiler catches errors before your code runs.
+> Spec catches misunderstandings before your AI codes.
 
-- Spec stage → cheap to steer
+- Spec stage → **cheap to steer**
 - Implementation stage → expensive to steer
-- Production → **impossible to steer**
+- Production → impossible to steer
+
+![intent.png](images/intent.png)
 
 <!-- SPEAKER NOTES — Slide 7 (~2 min)
 - Every developer knows you don't skip compilation. It catches errors early, when they're cheap.
