@@ -33,37 +33,203 @@ Do you need animations beyond impress.js defaults?
 
 ## Performance Pitfalls
 
-### NEVER use `backdrop-filter: blur()` on `.step`
+The camera transition works in impress.js by applying a single CSS `transform` to a `#canvas` element that contains **all slides simultaneously**. Every `.step` child is composited on every animation frame during that transform. The default markpress theme is butter-smooth because its `.step` has zero paint cost — just `position`, `box-sizing`, and `opacity`. Any expensive CSS on `.step` (not `.step.active`) multiplies by the total slide count.
 
-impress.js keeps **all slides in the DOM simultaneously** as 3D-positioned elements. Applying `backdrop-filter: blur()` to `.step` forces the browser to create a separate composite layer for every slide and blur each one independently — even off-screen slides. This causes severe GPU thrashing and makes transitions feel sluggish regardless of the `data-transition-duration` value.
+### The Mental Model: multiply by N slides
+
+Before adding any CSS rule to `.step`, ask: **"is this applied to all N slides at once?"**
+
+| Applies to | Paint cost multiplier |
+|---|---|
+| `.step` (base rule) | × N (all slides) |
+| `.step.active` | × 1 (only current slide) |
+| `body`, `html` | × 1 (single element) |
+
+Put cheap, static properties on `.step`. Move anything visually rich to `.step.active`.
+
+---
+
+### Rule 1 — Never use `rgba()` backgrounds on `.step`
+
+Semi-transparent backgrounds on `.step` are the single most common cause of sluggish transitions discovered in practice. During the canvas transform, each slide sweeps across the body gradient. Semi-transparent slides must be **alpha-composited against the changing background** on every frame — that is a full software repaint, not a GPU blit.
 
 **Bad:**
 ```css
 .step {
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.78); /* alpha compositing × N slides every frame */
 }
 ```
 
-**Fix:** Remove `backdrop-filter` entirely. Use `background` with `rgba()` transparency for a frosted-glass look without the GPU cost.
+**Good:**
+```css
+.step {
+  background: #faf9f7; /* fully opaque — trivial GPU blit */
+}
+```
 
-### Keep `data-transition-duration` under 600ms
+This also means: **never use `rgba()` for `--line`, `--surface`, or any CSS variable that feeds into a `.step` background or border**. Replace all `rgba(r,g,b,alpha)` with the equivalent pre-multiplied hex color.
 
-Values above ~700ms feel sluggish in a live presentation. A good default is `550ms`. Set it via post-processing in `build.cjs`:
+---
+
+### Rule 2 — Never use `backdrop-filter` on `.step`
+
+`backdrop-filter: blur()` on `.step` forces the browser to create a separate composite layer for every slide and blur each one independently — even invisible ones.
+
+**Bad:**
+```css
+.step { backdrop-filter: blur(16px); }
+```
+
+**Fix:** Remove it entirely. Use an opaque background color instead.
+
+---
+
+### Rule 3 — Never use `overflow: hidden` on `.step`
+
+`overflow: hidden` combined with `border-radius` on a 3D-transformed element forces a stacking context and a clipping layer per slide. Remove it — use `clip-path` on `.step.active` only if you need clipping, or just rely on `border-radius` without clipping.
+
+---
+
+### Rule 4 — Never use pseudo-elements (`::before`, `::after`) on `.step`
+
+Each pseudo-element is an extra paint surface. Two pseudo-elements on `.step` = 2 × N extra composite layers during the camera animation.
+
+**Bad:**
+```css
+.step::before { background: radial-gradient(...); } /* × N slides */
+.step::after  { background: radial-gradient(...); } /* × N slides */
+```
+
+**Good:**
+```css
+.step.active::before { background: radial-gradient(...); } /* × 1 slide only */
+```
+
+---
+
+### Rule 5 — Never use multi-layer `radial-gradient` on `body`
+
+The body background repaints as the canvas moves. Multiple stacked `radial-gradient` layers on `body` or `html` are expensive even as a single element — the browser must evaluate all gradient layers on every repaint.
+
+**Bad:**
+```css
+body {
+  background:
+    radial-gradient(ellipse at 18% 14%, rgba(79,70,229,0.09) 0%, transparent 42%),
+    radial-gradient(ellipse at 82% 78%, rgba(5,150,105,0.07) 0%, transparent 40%),
+    radial-gradient(ellipse at 52% 52%, rgba(244,114,182,0.04) 0%, transparent 50%),
+    #f0ede8;
+}
+```
+
+**Good — follow the markpress default theme approach:**
+```css
+body {
+  background: radial-gradient(#f0ede8, #d8d2c8); /* single gradient, cheap */
+}
+```
+
+---
+
+### Rule 6 — No `box-shadow` on `.step` base rule
+
+`box-shadow` is a blur operation over the element's bounding box. On all N slides simultaneously it adds significant repaint cost.
+
+**Bad:**
+```css
+.step { box-shadow: 0 20px 60px rgba(0,0,0,0.08); }
+```
+
+**Good:**
+```css
+.step.active { box-shadow: 0 20px 60px rgba(0,0,0,0.12); } /* only active slide */
+```
+
+---
+
+### Rule 7 — No content entrance animations on `.step > *`
+
+Transitions/animations on direct children of `.step` (e.g., `translateY` stagger) run while the slide is already visible. They don't help the camera transition but add style recalculation and paint cost on arrival.
+
+If you want entrance effects, keep them minimal: `opacity` only on `.step.active > *`, no `transform`.
+
+---
+
+### Rule 8 — Remove tiled `radial-gradient` background patterns
+
+A `body::before` with `background-image: radial-gradient(... 1px, transparent 1px); background-size: 40px 40px` creates a massive tiled raster surface that must be repainted every frame as the camera moves.
+
+**Bad:**
+```css
+body::before {
+  background-image: radial-gradient(rgba(0,0,0,0.045) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+```
+
+**Fix:** Remove it entirely. Use a solid or simple gradient body background.
+
+---
+
+### Rule 9 — Avoid `rotate-y` and `z` on slide positions
+
+`data-rotate-y` and large `data-z` values on individual slides force the browser to compute per-slide 3D perspective matrices every frame. This is distinct from the camera transform — each slide's own 3D transform compounds the cost.
+
+**Avoid:**
+```
+<!--slide-attr x=3000 y=-500 z=-900 rotate-y=7 -->
+```
+
+**Prefer 2D only:**
+```
+<!--slide-attr x=1700 y=-300 rotate=-2 -->
+```
+
+Use `rotate` (z-axis only) for visual variety. Reserve `rotate-y`/`rotate-x`/`z` for specific intentional 3D moments, not as a general layout choice.
+
+---
+
+### Rule 10 — Set `opacity: 0` (not `0.15`) on inactive `.step`
+
+Inactive slides at `opacity: 0` are skipped by the compositor entirely — no paint, no blit. At `opacity: 0.15` they are still composited (just dimly). Zero is free; anything above zero has a cost.
+
+```css
+.step {
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.step.active { opacity: 1; }
+```
+
+This also eliminates the "ghost slide" problem where nearby slides bleed into the viewport.
+
+---
+
+### Keep `data-transition-duration` at 200ms
+
+A good default for a 2D flat layout. Set it via post-processing in `build.cjs`:
 
 ```js
 stripped = stripped.replace(
   /(<div[^>]*id=["']impress["'][^>]*)(>)/,
-  '$1 data-transition-duration="550"$2'
+  '$1 data-transition-duration="200"$2'
 );
 ```
 
-### Keep content entrance animation delays short
+---
 
-Total stagger delay (first child to last) should stay under ~400ms. Delays exceeding 500ms make the slide feel broken on arrival. Recommended caps:
-- Per-child transition duration: ≤ 320ms
-- Max stagger delay (nth child): ≤ 350ms
-- List item animation duration: ≤ 300ms
+### The Safe CSS Checklist for `.step`
+
+Before shipping, verify the base `.step` rule contains **only**:
+
+- `position`, `width`, `min-height`, `padding`, `box-sizing`
+- `border` (with fully opaque color — no `rgba`)
+- `border-radius`
+- `background` (fully opaque hex — no `rgba`, no gradients)
+- `opacity: 0`
+- `transition: opacity Xms ease`
+
+Everything else belongs on `.step.active` or a per-slide `#step-N` rule.
 
 
 ## 1. Automatic Layout Generation
