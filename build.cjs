@@ -214,6 +214,8 @@ const customCss = `
       font-size: clamp(3.2rem, 6.4vmin, 6.4rem);
       font-weight: 200;
       letter-spacing: -0.04em;
+      line-height: 1.08;
+      padding-bottom: 0.08em;
       max-width: none;
       background: linear-gradient(135deg, #18181b 25%, var(--accent) 100%);
       -webkit-background-clip: text;
