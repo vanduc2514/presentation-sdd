@@ -12,6 +12,7 @@ This skill covers layout generation, manual slide positioning (3D/rotation/scale
 - **All base options are set inline** via `<!--markpress-opt-->` in the markdown file — not as CLI flags or `build.cjs` arguments.
 - **Custom CSS injection and HTML post-processing** are done in `build.cjs` after markpress generates the HTML.
 - The `build.cjs` calls markpress with an empty options object (`{}`); the embedded options in the markdown file take precedence.
+- **No GPU-specific CSS** — do not use `will-change`, `contain`, or any GPU hint. Slides must work smoothly on non-GPU browsers.
 
 ## Decision Tree
 

@@ -62,9 +62,7 @@ const customCss = `
       background: linear-gradient(148deg, var(--surface), var(--surface-strong));
       box-shadow: var(--shadow);
       opacity: 0.18;
-      transition:
-        opacity 250ms ease,
-        box-shadow 250ms ease;
+      transition: opacity 250ms ease;
       overflow: hidden;
     }
 
@@ -120,29 +118,29 @@ const customCss = `
 
     /* Stagger each child with increasing delay */
     .step.active > *:nth-child(1),
-    .step.present > *:nth-child(1) { transition-delay: 80ms; }
+    .step.present > *:nth-child(1) { transition-delay: 60ms; }
     .step.active > *:nth-child(2),
-    .step.present > *:nth-child(2) { transition-delay: 140ms; }
+    .step.present > *:nth-child(2) { transition-delay: 110ms; }
     .step.active > *:nth-child(3),
-    .step.present > *:nth-child(3) { transition-delay: 190ms; }
+    .step.present > *:nth-child(3) { transition-delay: 155ms; }
     .step.active > *:nth-child(4),
-    .step.present > *:nth-child(4) { transition-delay: 235ms; }
+    .step.present > *:nth-child(4) { transition-delay: 195ms; }
     .step.active > *:nth-child(5),
-    .step.present > *:nth-child(5) { transition-delay: 275ms; }
+    .step.present > *:nth-child(5) { transition-delay: 230ms; }
     .step.active > *:nth-child(n + 6),
-    .step.present > *:nth-child(n + 6) { transition-delay: 310ms; }
+    .step.present > *:nth-child(n + 6) { transition-delay: 260ms; }
 
     /* List items get their own stagger inside the ul */
     .step.active li,
     .step.present li {
-      animation: itemIn 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: itemIn 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
     }
-    .step.active li:nth-child(1), .step.present li:nth-child(1) { animation-delay: 160ms; }
-    .step.active li:nth-child(2), .step.present li:nth-child(2) { animation-delay: 220ms; }
-    .step.active li:nth-child(3), .step.present li:nth-child(3) { animation-delay: 275ms; }
-    .step.active li:nth-child(4), .step.present li:nth-child(4) { animation-delay: 325ms; }
-    .step.active li:nth-child(5), .step.present li:nth-child(5) { animation-delay: 370ms; }
-    .step.active li:nth-child(n+6), .step.present li:nth-child(n+6) { animation-delay: 410ms; }
+    .step.active li:nth-child(1), .step.present li:nth-child(1) { animation-delay: 120ms; }
+    .step.active li:nth-child(2), .step.present li:nth-child(2) { animation-delay: 170ms; }
+    .step.active li:nth-child(3), .step.present li:nth-child(3) { animation-delay: 215ms; }
+    .step.active li:nth-child(4), .step.present li:nth-child(4) { animation-delay: 255ms; }
+    .step.active li:nth-child(5), .step.present li:nth-child(5) { animation-delay: 290ms; }
+    .step.active li:nth-child(n+6), .step.present li:nth-child(n+6) { animation-delay: 320ms; }
 
     @keyframes itemIn {
       from { opacity: 0; transform: translateX(-14px); }
@@ -152,13 +150,13 @@ const customCss = `
     /* Table rows slide in from below */
     .step.active tbody tr,
     .step.present tbody tr {
-      animation: rowIn 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: rowIn 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
     }
-    .step.active tbody tr:nth-child(1), .step.present tbody tr:nth-child(1) { animation-delay: 220ms; }
-    .step.active tbody tr:nth-child(2), .step.present tbody tr:nth-child(2) { animation-delay: 275ms; }
-    .step.active tbody tr:nth-child(3), .step.present tbody tr:nth-child(3) { animation-delay: 325ms; }
-    .step.active tbody tr:nth-child(4), .step.present tbody tr:nth-child(4) { animation-delay: 370ms; }
-    .step.active tbody tr:nth-child(n+5), .step.present tbody tr:nth-child(n+5) { animation-delay: 410ms; }
+    .step.active tbody tr:nth-child(1), .step.present tbody tr:nth-child(1) { animation-delay: 170ms; }
+    .step.active tbody tr:nth-child(2), .step.present tbody tr:nth-child(2) { animation-delay: 215ms; }
+    .step.active tbody tr:nth-child(3), .step.present tbody tr:nth-child(3) { animation-delay: 255ms; }
+    .step.active tbody tr:nth-child(4), .step.present tbody tr:nth-child(4) { animation-delay: 290ms; }
+    .step.active tbody tr:nth-child(n+5), .step.present tbody tr:nth-child(n+5) { animation-delay: 320ms; }
 
     @keyframes rowIn {
       from { opacity: 0; transform: translateY(10px); }
@@ -393,7 +391,7 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
   // Smooth but snappy camera transition
   stripped = stripped.replace(
     /(<div[^>]*id=["']impress["'][^>]*)(>)/,
-    '$1 data-transition-duration="550"$2'
+    '$1 data-transition-duration="450"$2'
   );
   const finalHtml = stripped
     .replace('<head>', `<head>\n${googleFonts}`)
