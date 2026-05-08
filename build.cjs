@@ -403,28 +403,63 @@ const customCss = `
       opacity: 0.6;
     }
 
-    /* ── SDD Workflow slide: content + image side by side ──── */
-    #step-7 {
+    /* ── Global image slide layout: content + image side by side ──── */
+    .step:has(.global-image-col) {
+      justify-content: flex-start;
+      padding-top: 2.8rem;
+    }
+
+    .global-image-col {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
       grid-template-rows: auto 1fr;
       column-gap: 2rem;
-      align-items: stretch;
-      height: min(680px, 75vh);
+      row-gap: 1rem;
+      flex: 1;
     }
 
-    #step-7 > h1 {
+    /* h1 spans full width inside the grid */
+    .global-image-col > h1 {
       grid-column: 1 / -1;
       grid-row: 1;
+      margin: 0 0 0.2rem 0;
+      font-size: clamp(2.2rem, 4.4vmin, 4.4rem);
     }
 
-    #step-7 > table {
+    .global-image-col > .col-left {
       grid-column: 1;
       grid-row: 2;
-      align-self: start;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      align-self: center;
     }
 
-    #step-7 > p:has(img) {
+    .global-image-col > .col-left > *:first-child {
+      margin-top: 0;
+    }
+
+    /* Compact blockquote inside image slide */
+    .global-image-col blockquote {
+      margin: 0;
+      padding: 0.65rem 1rem;
+      font-size: clamp(0.9rem, 1.7vmin, 1.3rem);
+      line-height: 1.4;
+    }
+
+    /* Compact question cards inside image slide */
+    .global-image-col .question-list {
+      margin-top: 0;
+      gap: 0.55rem;
+    }
+
+    .global-image-col .question-item {
+      padding: 0.7rem 1rem;
+      font-size: clamp(0.88rem, 1.65vmin, 1.2rem);
+      line-height: 1.35;
+    }
+
+    .global-image-col > .col-right {
       grid-column: 2;
       grid-row: 2;
       display: flex;
@@ -433,13 +468,17 @@ const customCss = `
       margin: 0;
     }
 
-    #step-7 img {
+    .global-image-col img {
       width: 100%;
-      height: 100%;
+      max-height: 54vh;
       object-fit: contain;
       object-position: center center;
       display: block;
       border-radius: 12px;
+      background: #ffffff;
+      padding: 0.5rem;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
 
     @media (max-width: 900px) {
@@ -454,17 +493,17 @@ const customCss = `
       .step table { font-size: 0.88em; }
 
       /* On mobile: stack vertically, image below content */
-      #step-7 {
+      .global-image-col {
         display: flex;
         flex-direction: column;
       }
 
-      #step-7 > p:has(img) {
+      .global-image-col > .col-right {
         order: 10;
         margin-top: 1.2rem;
       }
 
-      #step-7 img {
+      .global-image-col img {
         max-height: 38vh;
         width: 100%;
       }
@@ -521,6 +560,36 @@ function wrapStepTwoCol(html, stepId) {
   });
 }
 
+/**
+ * Globally finds any slide with an image and wraps the content into a two-column layout.
+ * The h1 goes inside the grid as a full-width header; left col has the remaining content,
+ * right col has the image.
+ */
+function wrapImageSlidesGlobally(html) {
+  const parts = html.split(/(?=<div id="step-\d+")/);
+  return parts.map(part => {
+    if (!part.includes('class="step"') || !part.includes('<p><img')) return part;
+
+    const h1Match = part.match(/<h1[^>]*>[\s\S]*?<\/h1>/);
+    if (!h1Match) return part;
+
+    const h1End = part.indexOf(h1Match[0]) + h1Match[0].length;
+    const imgMatch = part.match(/<p><img[^>]*><\/p>/);
+    if (!imgMatch) return part;
+
+    const imgStart = part.indexOf(imgMatch[0]);
+    if (imgStart < h1End) return part;
+
+    const beforeH1 = part.slice(0, part.indexOf(h1Match[0]));
+    const h1 = h1Match[0];
+    const leftContent = part.slice(h1End, imgStart).trim();
+    const rightContent = imgMatch[0];
+    const afterImg = part.slice(imgStart + imgMatch[0].length);
+
+    return `${beforeH1}<div class="global-image-col">\n${h1}\n<div class="col-left">\n${leftContent}\n</div>\n<div class="col-right">\n${rightContent}\n</div>\n</div>\n${afterImg}`;
+  }).join('');
+}
+
 markpress(INPUT, { theme: false }).then(({ html }) => {
   // Strip markpress theme <link> and <style> tags so our CSS is the sole source of truth
   let stripped = html
@@ -544,6 +613,7 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
   stripped = wrapStepTwoCol(stripped, 'step-8');
   stripped = wrapStepList(stripped, 'step-10', 'takeaway-list', 'takeaway-item');
   stripped = wrapStepList(stripped, 'step-11', 'question-list', 'question-item');
+  stripped = wrapImageSlidesGlobally(stripped);
   const finalHtml = stripped
     .replace('<head>', `<head>\n${googleFonts}`)
     .replace('</head>', `${customCss}\n</head>`);
