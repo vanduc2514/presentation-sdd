@@ -50,7 +50,6 @@ const customCss = `
       background-image: radial-gradient(rgba(0, 0, 0, 0.045) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
-      will-change: transform;
     }
 
     .step {
@@ -64,8 +63,6 @@ const customCss = `
       box-shadow: var(--shadow);
       opacity: 0.18;
       transition: opacity 250ms ease;
-      will-change: transform, opacity;
-      contain: layout style;
       overflow: hidden;
     }
 
