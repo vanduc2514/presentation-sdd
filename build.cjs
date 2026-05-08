@@ -17,41 +17,26 @@ const googleFonts = `
 const customCss = `
   <style>
     :root {
-      --bg: #f0ede8;
-      --surface: rgba(255, 255, 255, 0.78);
-      --surface-strong: rgba(255, 255, 255, 0.94);
       --ink: #18181b;
       --ink-dim: #52525b;
       --muted: #a1a1aa;
-      --line: rgba(0, 0, 0, 0.07);
+      --line: #e4e4e7;
       --accent: #4f46e5;
-      --accent-soft: rgba(79, 70, 229, 0.08);
       --accent2: #059669;
-      --accent2-soft: rgba(5, 150, 105, 0.08);
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
       --radius: 28px;
     }
 
-    html,
-    body {
-      background:
-        radial-gradient(ellipse at 18% 14%, rgba(79, 70, 229, 0.09) 0%, transparent 42%),
-        radial-gradient(ellipse at 82% 78%, rgba(5, 150, 105, 0.07) 0%, transparent 40%),
-        radial-gradient(ellipse at 52% 52%, rgba(244, 114, 182, 0.04) 0%, transparent 50%),
-        var(--bg);
+    /* Simple solid background — same approach as markpress default theme.
+       No multi-layer gradients; those repaint every frame during canvas transform. */
+    html, body {
+      background: radial-gradient(#f0ede8, #d8d2c8);
       color: var(--ink);
       font-family: "Inter", "Segoe UI", system-ui, sans-serif;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image: radial-gradient(rgba(0, 0, 0, 0.045) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-    }
-
+    /* All 10 slides live in the DOM simultaneously inside the moving canvas.
+       Keep base .step completely flat — opaque solid, no pseudo-elements, no shadow.
+       Only opacity animates; the browser can blit it as a plain layer. */
     .step {
       width: min(1160px, 84vw);
       min-height: min(680px, 75vh);
@@ -59,110 +44,22 @@ const customCss = `
       box-sizing: border-box;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: linear-gradient(148deg, var(--surface), var(--surface-strong));
-      box-shadow: var(--shadow);
-      opacity: 0.18;
-      transition: opacity 250ms ease;
-      overflow: hidden;
+      background: #faf9f7;
+      opacity: 0;
+      transition: opacity 200ms ease;
     }
 
-    .step::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: var(--radius);
-      background: radial-gradient(ellipse at top right, rgba(79, 70, 229, 0.06), transparent 50%);
-      pointer-events: none;
-    }
-
-    .step::after {
-      content: "";
-      position: absolute;
-      bottom: -20%;
-      right: -8%;
-      width: 40%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(5, 150, 105, 0.07), transparent 70%);
-      pointer-events: none;
-    }
-
+    /* Active slide: add shadow. Only 1 slide active at a time — cost is minimal. */
     .step.active {
       opacity: 1;
-      box-shadow:
-        0 28px 80px rgba(0, 0, 0, 0.11),
-        0 0 0 1px rgba(79, 70, 229, 0.12),
-        0 1px 0 rgba(255, 255, 255, 0.8) inset;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
     }
 
     .step > *:first-child {
       margin-top: 0;
     }
 
-    /* === CONTENT ENTRANCE ANIMATIONS === */
-    .step > * {
-      position: relative;
-      z-index: 1;
-      opacity: 0;
-      transform: translateY(14px) scale(0.98);
-      transition:
-        opacity 280ms cubic-bezier(0.16, 1, 0.3, 1),
-        transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .step.active > *,
-    .step.present > * {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    /* Stagger each child with increasing delay */
-    .step.active > *:nth-child(1),
-    .step.present > *:nth-child(1) { transition-delay: 60ms; }
-    .step.active > *:nth-child(2),
-    .step.present > *:nth-child(2) { transition-delay: 110ms; }
-    .step.active > *:nth-child(3),
-    .step.present > *:nth-child(3) { transition-delay: 155ms; }
-    .step.active > *:nth-child(4),
-    .step.present > *:nth-child(4) { transition-delay: 195ms; }
-    .step.active > *:nth-child(5),
-    .step.present > *:nth-child(5) { transition-delay: 230ms; }
-    .step.active > *:nth-child(n + 6),
-    .step.present > *:nth-child(n + 6) { transition-delay: 260ms; }
-
-    /* List items get their own stagger inside the ul */
-    .step.active li,
-    .step.present li {
-      animation: itemIn 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-    .step.active li:nth-child(1), .step.present li:nth-child(1) { animation-delay: 120ms; }
-    .step.active li:nth-child(2), .step.present li:nth-child(2) { animation-delay: 170ms; }
-    .step.active li:nth-child(3), .step.present li:nth-child(3) { animation-delay: 215ms; }
-    .step.active li:nth-child(4), .step.present li:nth-child(4) { animation-delay: 255ms; }
-    .step.active li:nth-child(5), .step.present li:nth-child(5) { animation-delay: 290ms; }
-    .step.active li:nth-child(n+6), .step.present li:nth-child(n+6) { animation-delay: 320ms; }
-
-    @keyframes itemIn {
-      from { opacity: 0; transform: translateX(-14px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-
-    /* Table rows slide in from below */
-    .step.active tbody tr,
-    .step.present tbody tr {
-      animation: rowIn 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-    .step.active tbody tr:nth-child(1), .step.present tbody tr:nth-child(1) { animation-delay: 170ms; }
-    .step.active tbody tr:nth-child(2), .step.present tbody tr:nth-child(2) { animation-delay: 215ms; }
-    .step.active tbody tr:nth-child(3), .step.present tbody tr:nth-child(3) { animation-delay: 255ms; }
-    .step.active tbody tr:nth-child(4), .step.present tbody tr:nth-child(4) { animation-delay: 290ms; }
-    .step.active tbody tr:nth-child(n+5), .step.present tbody tr:nth-child(n+5) { animation-delay: 320ms; }
-
-    @keyframes rowIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
+    /* ── Typography ───────────────────────────────── */
     .step h1,
     .step h2,
     .step h3 {
@@ -233,8 +130,8 @@ const customCss = `
       display: inline-block;
       padding: 0.1em 0.52em;
       border-radius: 6px;
-      background: rgba(79, 70, 229, 0.08);
-      border: 1px solid rgba(79, 70, 229, 0.16);
+      background: #edeafc;
+      border: 1px solid #c7c3f0;
       color: var(--accent);
       font-size: 0.88em;
       font-family: "SF Mono", "Fira Code", monospace;
@@ -245,7 +142,6 @@ const customCss = `
       border-radius: 18px;
       border: 1px solid var(--line);
       background: #1e1e2e;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
     }
 
     .step pre code {
@@ -262,7 +158,7 @@ const customCss = `
       padding: 1rem 0 1rem 1.4rem;
       border-left: 3px solid var(--accent);
       color: var(--ink-dim);
-      background: linear-gradient(90deg, var(--accent-soft), transparent 65%);
+      background: #f0effe;
       border-radius: 0 12px 12px 0;
     }
 
@@ -271,14 +167,13 @@ const customCss = `
       margin-top: 1.6rem;
       border-collapse: separate;
       border-spacing: 0;
-      overflow: hidden;
       border: 1px solid var(--line);
       border-radius: 20px;
-      background: rgba(255, 255, 255, 0.6);
+      background: #ffffff;
     }
 
     .step thead th {
-      background: rgba(79, 70, 229, 0.06);
+      background: #f0effe;
       color: var(--accent);
       font-size: clamp(0.8rem, 1.45vmin, 1.05rem);
       font-weight: 500;
@@ -304,17 +199,14 @@ const customCss = `
       font-weight: 600;
     }
 
-    /* Title slide + Closing slide */
+    /* ── Per-slide overrides ──────────────────────── */
     #step-1,
     #step-10 {
       display: flex;
       flex-direction: column;
       justify-content: center;
-      background:
-        radial-gradient(ellipse at top right, rgba(79, 70, 229, 0.1), transparent 48%),
-        radial-gradient(ellipse at bottom left, rgba(5, 150, 105, 0.07), transparent 42%),
-        linear-gradient(148deg, rgba(255, 255, 255, 0.92), rgba(248, 246, 255, 0.88));
-      border-color: rgba(79, 70, 229, 0.12);
+      background: #f8f7ff;
+      border-color: #d4d0f5;
     }
 
     #step-1 h1,
@@ -346,7 +238,6 @@ const customCss = `
       font-weight: 400;
     }
 
-    /* Section highlight slide */
     #step-5 h1 {
       background: linear-gradient(135deg, #18181b 20%, var(--accent2) 100%);
       -webkit-background-clip: text;
@@ -354,7 +245,6 @@ const customCss = `
       background-clip: text;
     }
 
-    /* Smaller font for data-heavy tables */
     #step-6 table,
     #step-7 table,
     #step-9 table {
@@ -369,13 +259,8 @@ const customCss = `
         border-radius: 20px;
       }
 
-      .step h1 {
-        max-width: none;
-      }
-
-      .step table {
-        font-size: 0.88em;
-      }
+      .step h1 { max-width: none; }
+      .step table { font-size: 0.88em; }
     }
   </style>`;
 
@@ -391,7 +276,7 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
   // Smooth but snappy camera transition
   stripped = stripped.replace(
     /(<div[^>]*id=["']impress["'][^>]*)(>)/,
-    '$1 data-transition-duration="450"$2'
+    '$1 data-transition-duration="200"$2'
   );
   const finalHtml = stripped
     .replace('<head>', `<head>\n${googleFonts}`)

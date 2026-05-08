@@ -6,7 +6,7 @@
 }
 markpress-opt-->
 
-<!--slide-attr x=0 y=0 z=0 scale=1.3 -->
+<!--slide-attr x=0 y=0 scale=1.2 -->
 
 # Your AI Doesn't Know What You Want
 ## (And Neither Do You)
@@ -19,7 +19,7 @@ Spec-Driven Development for Real Projects
 
 ------
 
-<!--slide-attr x=3000 y=-500 z=-900 rotate=-2 rotate-y=7 scale=1.0 -->
+<!--slide-attr x=1700 y=-300 rotate=-2 scale=1.0 -->
 
 # Reality Check
 
@@ -34,7 +34,7 @@ Spec-Driven Development for Real Projects
 
 ------
 
-<!--slide-attr x=5600 y=700 z=-500 rotate=3 rotate-y=-5 scale=0.92 -->
+<!--slide-attr x=3200 y=400 rotate=3 scale=1.0 -->
 
 # Where Does It All Go Wrong?
 
@@ -53,7 +53,7 @@ Spec-Driven Development for Real Projects
 
 ------
 
-<!--slide-attr x=4000 y=2600 z=-1100 rotate=-6 rotate-y=4 scale=1.0 -->
+<!--slide-attr x=2400 y=1600 rotate=-5 scale=1.0 -->
 
 # My Painful Story
 
@@ -72,7 +72,7 @@ Spec-Driven Development for Real Projects
 
 ------
 
-<!--slide-attr x=1400 y=3800 z=400 rotate=2 scale=1.25 -->
+<!--slide-attr x=800 y=2300 rotate=2 scale=1.1 -->
 
 # What Is Spec-Driven Development?
 
@@ -92,7 +92,7 @@ Write the specification first — everything else is derived from it
 
 ------
 
-<!--slide-attr x=-1600 y=3600 z=-500 rotate=-2 rotate-y=-4 scale=1.0 -->
+<!--slide-attr x=-900 y=2200 rotate=-2 scale=1.0 -->
 
 # The SDD Workflow
 
@@ -112,7 +112,7 @@ Write the specification first — everything else is derived from it
 
 ------
 
-<!--slide-attr x=-3800 y=2000 z=-800 rotate=5 rotate-y=6 scale=1.0 -->
+<!--slide-attr x=-2200 y=1200 rotate=4 scale=1.0 -->
 
 # Vibe Coding vs Spec-Driven
 
@@ -132,7 +132,7 @@ Write the specification first — everything else is derived from it
 
 ------
 
-<!--slide-attr x=-4400 y=200 z=300 rotate=-3 scale=1.1 -->
+<!--slide-attr x=-2500 y=100 rotate=-3 scale=1.05 -->
 
 # The Intent Compiler
 
@@ -156,7 +156,7 @@ Write the specification first — everything else is derived from it
 
 ------
 
-<!--slide-attr x=-2400 y=-1400 z=-400 rotate=2 rotate-y=-5 scale=1.0 -->
+<!--slide-attr x=-1400 y=-850 rotate=2 scale=1.0 -->
 
 # SDD with OpenSpec
 
@@ -180,7 +180,7 @@ Write the specification first — everything else is derived from it
 
 ------
 
-<!--slide-attr x=0 y=-300 z=2200 scale=1.4 -->
+<!--slide-attr x=0 y=-200 scale=1.3 -->
 
 # Closing
 
