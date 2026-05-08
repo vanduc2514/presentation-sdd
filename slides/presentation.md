@@ -23,11 +23,9 @@ Spec-Driven Development for Real Projects
 
 # Reality Check
 
-<div class="question-list">
-<div class="question-item">Who has shipped AI-generated code that changed the <strong>wrong thing</strong>?</div>
-<div class="question-item">Who noticed the output getting <strong>worse</strong> the longer the session ran?</div>
-<div class="question-item">Who didn't know how to <strong>break the session</strong> and continue cleanly?</div>
-</div>
+- Who has shipped AI-generated code that changed the **wrong thing**?
+- Who noticed the output getting **worse** the longer the session ran?
+- Who didn't know how to **break the session** and continue cleanly?
 
 <!-- SPEAKER NOTES — Slide 2 (~2 min)
 - Ask each question as a show-of-hands moment. Pause between them.
@@ -40,12 +38,10 @@ Spec-Driven Development for Real Projects
 
 # Where Does It All Go Wrong?
 
-<div class="problem-grid">
-<div class="problem-item">We are already <strong>vibe coding in production</strong> — we just don't call it that</div>
-<div class="problem-item">Our prompts are business-level: they say <em>what</em>, not <em>how</em></div>
-<div class="problem-item">AI explores the codebase — but <strong>guesses</strong> the technical detail we left out</div>
-<div class="problem-item">Vague intent → hallucinations → wrong class, wrong file, wrong assumption</div>
-</div>
+- We are already **vibe coding in production** — we just don't call it that
+- Our prompts are business-language: they say **what** the user want, not **how** it should be built
+- AI explores the codebase — but **guesses** the technical detail we left out
+- Vague intent → hallucinations → wrong class, wrong file, wrong assumption
 
 <!-- SPEAKER NOTES — Slide 3 (~2 min)
 - Vibe coding isn't just a prototype habit. Any time you prompt without explicit technical intent, you're vibe coding.
@@ -61,13 +57,11 @@ Spec-Driven Development for Real Projects
 
 # My Painful Story
 
-<div class="story-list">
-<div class="story-item">Microservice project: changes scattered across <strong>multiple repos + a legacy monolith</strong></div>
-<div class="story-item">AI jumped straight to generating — no full-picture exploration</div>
-<div class="story-item">Wrong code. Wrong changes. <strong>Line-by-line review of nonsense.</strong></div>
-<div class="story-item">Performance dropped. Frustration rose.</div>
-<div class="story-item">I started dreading the tool I was supposed to love.</div>
-</div>
+- Microservice project: changes scattered across **multiple repos + a legacy monolith**
+- AI jumped straight to generating — no full-picture exploration
+- Wrong code. Wrong changes. **Line-by-line review of nonsense.**
+- Performance dropped. Frustration rose.
+- I started dreading the tool I was supposed to love.
 
 <!-- SPEAKER NOTES — Slide 4 (~2 min)
 - This was a real professional project. The codebase was spread across services and a legacy system that the AI had only partial visibility into.
@@ -80,9 +74,9 @@ Spec-Driven Development for Real Projects
 
 <!--slide-attr x=800 y=2300 rotate=2 scale=1.1 -->
 
-# What Is Spec-Driven Development?
+# What Is Spec-Driven Development (SDD)?
 
-Write the specification first — everything else is derived from it
+**Write** the specification first — everything else is derived from it
 
 **The spec is the shared understanding between you and the AI**
 
@@ -142,17 +136,16 @@ Write the specification first — everything else is derived from it
 
 # The Intent Compiler
 
-<div class="two-col"><div class="col-left">
-<blockquote><p>A compiler catches errors before your code runs.<br>SDD catches misunderstandings before your AI codes.</p></blockquote>
-<p><strong>You don't review the output — you review the intent.</strong></p>
-</div>
-<div class="col-right"><ul>
-<li>Spec stage → cheapest to fix</li>
-<li>Design stage → cheap to fix</li>
-<li>Code stage → expensive to fix</li>
-<li>PR stage → very expensive</li>
-<li>Production → catastrophic</li>
-</ul></div></div>
+> A compiler catches errors before your code runs.  
+> SDD catches misunderstandings before your AI codes.
+
+**You don't review the output — you review the intent.**
+
+- Spec stage → cheapest to fix
+- Design stage → cheap to fix
+- Code stage → expensive to fix
+- PR stage → very expensive
+- Production → catastrophic
 
 <!-- SPEAKER NOTES — Slide 7 (~2 min)
 - Every developer knows you don't skip compilation. It catches errors early, when they're cheap.
@@ -193,11 +186,9 @@ Write the specification first — everything else is derived from it
 
 Your AI know what you want if it has enough context
 
-<div class="takeaway-list">
-<div class="takeaway-item">The answer isn't a better prompt. It's a clearer spec.</div>
-<div class="takeaway-item">SDD is ahead-of-time compilation for your intent.</div>
-<div class="takeaway-item">Apply SDD for implementing a feature then evaluate.</div>
-</div>
+- The answer isn't a better prompt. It's a clearer spec.
+- SDD is ahead-of-time compilation for your intent.
+- Apply SDD for implementing a feature then evaluate.
 
 <!-- SPEAKER NOTES — Slide 9 (~4 min)
 - Return to the title. The joke lands differently now — it's not just a punchline, it's a diagnosis.

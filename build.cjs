@@ -253,12 +253,6 @@ const customCss = `
       font-size: clamp(0.88rem, 1.7vmin, 1.22rem);
     }
 
-    /* ── Engagement slides: larger list items ─────── */
-    #step-4 li {
-      font-size: clamp(1.1rem, 2.1vmin, 1.65rem);
-      margin: 0.85rem 0;
-    }
-
     /* ── Story timeline (slide 4) ──────────────────── */
     .story-list {
       display: flex;
@@ -402,6 +396,56 @@ const customCss = `
     }
   </style>`;
 
+/**
+ * Mirrors what impress.js does at runtime: assign sequential id="step-N"
+ * to each .step div that has no id yet. Must run before other transforms.
+ */
+function addStepIds(html) {
+  let counter = 0;
+  return html.replace(/<div class="step"(?=[^>]*>)/g, () => {
+    counter++;
+    return `<div id="step-${counter}" class="step"`;
+  });
+}
+
+/**
+ * Within a specific impress.js step, wraps the <ul> in a custom container div
+ * and converts each <li> to a styled <div>. Assumes no nested divs in step content.
+ */
+function wrapStepList(html, stepId, wrapperClass, itemClass) {
+  const stepRe = new RegExp(`(<div[^>]*id="${stepId}"[^>]*>)([\\s\\S]*?)(<\\/div>)`);
+  return html.replace(stepRe, (_, open, content, close) => {
+    const newContent = content.replace(/<ul>([\s\S]*?)<\/ul>/, (__, ulContent) => {
+      const items = ulContent.replace(/<li>([\s\S]*?)<\/li>/g, (_, liContent) => {
+        // Strip wrapping <p> tags that markdown-it adds for loose lists
+        const inner = liContent.replace(/^\s*<p>([\s\S]*?)<\/p>\s*$/, '$1').trim();
+        return `<div class="${itemClass}">${inner}</div>\n`;
+      });
+      return `<div class="${wrapperClass}">\n${items}</div>`;
+    });
+    return `${open}${newContent}${close}`;
+  });
+}
+
+/**
+ * Within a specific step, splits content into a two-column layout:
+ * everything between <h1> and <ul> becomes col-left; <ul> becomes col-right.
+ */
+function wrapStepTwoCol(html, stepId) {
+  const stepRe = new RegExp(`(<div[^>]*id="${stepId}"[^>]*>)([\\s\\S]*?)(<\\/div>)`);
+  return html.replace(stepRe, (_, open, content, close) => {
+    const ulMatch = content.match(/<ul>[\s\S]*?<\/ul>/);
+    if (!ulMatch) return _;
+    const h1End = content.indexOf('</h1>') + 5;
+    const ulStart = content.indexOf(ulMatch[0]);
+    const h1 = content.slice(0, h1End);
+    const leftContent = content.slice(h1End, ulStart).trim();
+    const afterUl = content.slice(ulStart + ulMatch[0].length);
+    const newContent = `${h1}\n<div class="two-col">\n<div class="col-left">${leftContent}</div>\n<div class="col-right">${ulMatch[0]}</div>\n</div>${afterUl}`;
+    return `${open}${newContent}${close}`;
+  });
+}
+
 markpress(INPUT, { theme: false }).then(({ html }) => {
   // Strip markpress theme <link> and <style> tags so our CSS is the sole source of truth
   let stripped = html
@@ -416,6 +460,13 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
     /(<div[^>]*id=["']impress["'][^>]*)(>)/,
     '$1 data-transition-duration="200"$2'
   );
+  // Transform markdown-rendered lists into styled component wrappers
+  stripped = addStepIds(stripped);
+  stripped = wrapStepList(stripped, 'step-2', 'question-list', 'question-item');
+  stripped = wrapStepList(stripped, 'step-3', 'problem-grid', 'problem-item');
+  stripped = wrapStepList(stripped, 'step-4', 'story-list', 'story-item');
+  stripped = wrapStepTwoCol(stripped, 'step-8');
+  stripped = wrapStepList(stripped, 'step-10', 'takeaway-list', 'takeaway-item');
   const finalHtml = stripped
     .replace('<head>', `<head>\n${googleFonts}`)
     .replace('</head>', `${customCss}\n</head>`);
