@@ -220,3 +220,18 @@ Create the **specification artifact** first — everything else is derived from 
 - Close with the compiler analogy one more time: "You wouldn't ship without compiling. Don't build without speccing."
 - Leave them with one action: pick the next feature on your backlog. Write a spec for it before you touch the AI. Just try it once.
 -->
+
+------
+
+<!--slide-attr x=1200 y=-800 rotate=-2 scale=1.2 -->
+
+# Thank You
+
+**Duc Nguyen**
+
+🐙 [github.com/vanduc2514](https://github.com/vanduc2514)
+
+<!-- SPEAKER NOTES — Thank You Slide
+- Thank the audience for their time.
+- Invite questions and discussion.
+-->
