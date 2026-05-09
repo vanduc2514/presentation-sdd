@@ -591,16 +591,34 @@ const customCss = `
       }
     }
 
+    /* ── Table scroll wrapper ─────────────────────── */
+    .table-wrap {
+      width: 100%;
+    }
+
     @media (max-width: 900px) {
       .step {
         width: 88vw;
         min-height: 72vh;
+        max-height: 90vh;
+        overflow-y: auto;
         padding: 2rem 1.8rem;
         border-radius: 20px;
       }
 
       .step h1 { max-width: none; }
       .step table { font-size: 0.88em; }
+
+      /* Allow table to scroll horizontally on narrow screens */
+      .table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Force 4-column comparison table to maintain readable column widths */
+      #step-11 .table-wrap table {
+        min-width: 420px;
+      }
 
       /* On mobile: stack vertically, image below content */
       .global-image-col {
@@ -712,6 +730,14 @@ function wrapImageSlidesGlobally(html) {
   }).join('');
 }
 
+/**
+ * Wraps every <table>...</table> in a <div class="table-wrap"> to allow
+ * horizontal scrolling on narrow screens without breaking desktop layout.
+ */
+function wrapTables(html) {
+  return html.replace(/<table>([\s\S]*?)<\/table>/g, '<div class="table-wrap"><table>$1</table></div>');
+}
+
 markpress(INPUT, { theme: false }).then(({ html }) => {
   // Strip markpress theme <link> and <style> tags so our CSS is the sole source of truth
   let stripped = html
@@ -737,6 +763,7 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
   stripped = wrapStepList(stripped, 'step-11', 'question-list', 'question-item');
   stripped = wrapStepList(stripped, 'step-12', 'takeaway-list', 'takeaway-item');
   stripped = wrapImageSlidesGlobally(stripped);
+  stripped = wrapTables(stripped);
 
   const imageModal = `
 <div id="img-modal" role="dialog" aria-modal="true" aria-label="Image preview">
@@ -789,7 +816,6 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
   }
 })();
 </script>`;
-
   const finalHtml = stripped
     .replace('<head>', `<head>\n${googleFonts}`)
     .replace('</head>', `${customCss}\n</head>`)
