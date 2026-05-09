@@ -604,6 +604,8 @@ const customCss = `
         overflow-y: auto;
         padding: 2rem 1.8rem;
         border-radius: 20px;
+        /* Ensure tall slides always start from the top instead of centering */
+        justify-content: flex-start;
       }
 
       .step h1 { max-width: none; }
@@ -783,7 +785,8 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
     document.body.style.overflow = 'hidden';
   }
 
-  function closeModal() {
+  function closeModal(e) {
+    if (e) { e.stopPropagation(); e.preventDefault(); }
     modal.classList.remove('open');
     modalImg.src = '';
     document.body.style.overflow = '';
@@ -794,6 +797,7 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
     imgs.forEach(function (img) {
       img.addEventListener('click', function (e) {
         e.stopPropagation();
+        e.preventDefault();
         openModal(img.src, img.alt);
       });
     });
@@ -802,11 +806,18 @@ markpress(INPUT, { theme: false }).then(({ html }) => {
   closeBtn.addEventListener('click', closeModal);
 
   modal.addEventListener('click', function (e) {
-    if (e.target === modal) closeModal();
+    if (e.target === modal) closeModal(e);
   });
 
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(e);
+  });
+
+  // Reset scroll position when entering a slide (so mobile always shows top)
+  document.addEventListener('impress:stepenter', function (e) {
+    if (e.target && e.target.scrollTop !== undefined) {
+      e.target.scrollTop = 0;
+    }
   });
 
   if (document.readyState === 'loading') {
