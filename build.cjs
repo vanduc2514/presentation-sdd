@@ -44,7 +44,9 @@ const customCss = `
 
     /* All 10 slides live in the DOM simultaneously inside the moving canvas.
        Keep base .step completely flat — opaque solid, no pseudo-elements, no shadow.
-       Only opacity animates; the browser can blit it as a plain layer. */
+       Only opacity animates; the browser can blit it as a plain layer.
+       pointer-events: none prevents invisible slides from capturing clicks when
+       they spatially overlap the active slide in the impress.js canvas. */
     .step {
       width: min(1160px, 84vw);
       min-height: min(680px, 75vh);
@@ -54,6 +56,7 @@ const customCss = `
       border-radius: var(--radius);
       background: #faf9f7;
       opacity: 0;
+      pointer-events: none;
       transition: opacity 200ms ease;
       display: flex;
       flex-direction: column;
@@ -63,6 +66,7 @@ const customCss = `
     /* Active slide: add shadow. Only 1 slide active at a time — cost is minimal. */
     .step.active {
       opacity: 1;
+      pointer-events: auto;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
     }
 
