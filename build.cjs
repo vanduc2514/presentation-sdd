@@ -29,9 +29,17 @@ const customCss = `
     /* Simple solid background — same approach as markpress default theme.
        No multi-layer gradients; those repaint every frame during canvas transform. */
     html, body {
+      overflow: hidden;
       background: radial-gradient(#f0ede8, #d8d2c8);
       color: var(--ink);
       font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+    }
+
+    /* On mobile, allow the page itself to scroll if content overflows */
+    @media (max-width: 900px) {
+      html, body {
+        overflow: auto;
+      }
     }
 
     /* All 10 slides live in the DOM simultaneously inside the moving canvas.
