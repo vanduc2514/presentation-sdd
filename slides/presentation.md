@@ -23,14 +23,14 @@ Spec-Driven Development with OpenSpec
 
 # Agenda
 
-- Why AI output goes wrong in real projects
-- What Spec-Driven Development (SDD) changes
-- A practical OpenSpec workflow you can apply today
-- How to start small and adopt it in your team
+- My painful story using AI without enough structure
+- Where AI coding goes wrong and why context windows limit it
+- What Spec-Driven Development (SDD) is
+- The SDD workflow and how it compares to vibe coding
 
 <!-- SPEAKER NOTES — Slide 2 (~2 min)
-- Ask each question as a show-of-hands moment. Pause between them.
-- The goal is recognition — they're not alone. This is everyone's daily reality.
+- Quick map of what comes next in the talk.
+- Keep this short, then transition directly into the painful story.
 -->
 
 ------
