@@ -21,11 +21,12 @@ Spec-Driven Development with OpenSpec
 
 <!--slide-attr x=1700 y=-300 rotate=-2 scale=1.0 -->
 
-# Reality Check
+# Agenda
 
-- Who has shipped AI-generated code that changed the **wrong thing**?
-- Who noticed the output getting **worse** the longer the session ran?
-- Who didn't know how to **break the session** and continue cleanly?
+- Why AI output goes wrong in real projects
+- What Spec-Driven Development (SDD) changes
+- A practical OpenSpec workflow you can apply today
+- How to start small and adopt it in your team
 
 <!-- SPEAKER NOTES — Slide 2 (~2 min)
 - Ask each question as a show-of-hands moment. Pause between them.
