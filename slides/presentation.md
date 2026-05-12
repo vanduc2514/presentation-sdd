@@ -26,7 +26,7 @@ Spec-Driven Development with OpenSpec
 - My painful story using AI without enough structure
 - Where AI coding goes wrong and why context windows limit it
 - What Spec-Driven Development (SDD) is
-- The SDD workflow and how it compares to vibe coding
+- Spec-Driven Development with OpenSpec
 
 <!-- SPEAKER NOTES — Slide 2 (~2 min)
 - Quick map of what comes next in the talk.
